@@ -595,11 +595,27 @@ function hideAyah(idx) {
 }
 
 function revealAll() {
-  currentAyahs.forEach((_, i) => {
+  currentAyahs.forEach((ayah, i) => {
+    // Reveal card and update eye icon
     document.getElementById('ayah-card-' + i).classList.remove('ayah-hidden');
     document.getElementById('eye-btn-' + i).textContent = '👁';
+    
+    // Set placeholder to correct text
+    const inp = document.getElementById('ayah-input-' + i);
+    if (inp) {
+      inp.placeholder = ayah.text;
+      // Option: Clear user text so they can see the placeholder
+      // inp.value = ''; 
+    }
+    
+    // Set full surah mode placeholder
+    const surahInp = document.getElementById('surah-ayah-input-' + i);
+    if (surahInp) {
+      surahInp.placeholder = ayah.text;
+    }
   });
-  showToast('👁 تم كشف جميع الآيات');
+  
+  showToast('👁 تم إظهار الآيات كنص تلميح (Placeholder)');
 }
 
 function resetAll() {
@@ -614,6 +630,17 @@ function resetAll() {
   // Clear drafts
   clearDraft(currentSurah.number);
   
+  // Reset placeholders
+  currentAyahs.forEach((_, i) => {
+    const inp = document.getElementById('ayah-input-' + i);
+    if (inp) inp.placeholder = 'اكتب الآية هنا...';
+    const surahInp = document.getElementById('surah-ayah-input-' + i);
+    if (surahInp) {
+      const isFirstBasmala = (i === 0 && currentSurah.number === 1);
+      surahInp.placeholder = isFirstBasmala ? 'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ' : 'اكتب الآية...';
+    }
+  });
+
   const surahFb  = document.getElementById('surah-write-feedback');
   if (surahFb) { surahFb.className = 'feedback-wrap'; surahFb.innerHTML = ''; }
   const basmalaInp = document.getElementById('surah-basmala-input');
