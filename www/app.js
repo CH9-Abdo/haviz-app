@@ -306,6 +306,48 @@ function goBack() {
 }
 
 // ──────────────────────────────────────────────
+// DRAFT SYSTEM
+// ──────────────────────────────────────────────
+function getDraftKey(surahNum) {
+  return `draft_surah_${surahNum}`;
+}
+
+function saveDraft(surahNum) {
+  const draft = {
+    ayahs: {},
+    basmala: ''
+  };
+
+  // Save full surah mode inputs
+  currentAyahs.forEach((_, i) => {
+    const inp = document.getElementById('surah-ayah-input-' + i);
+    if (inp) draft.ayahs[i] = inp.value;
+  });
+  const basmalaInp = document.getElementById('surah-basmala-input');
+  if (basmalaInp) draft.basmala = basmalaInp.value;
+
+  // Save ayah-by-ayah mode inputs
+  const ayahInputs = {};
+  currentAyahs.forEach((_, i) => {
+    const inp = document.getElementById('ayah-input-' + i);
+    if (inp) ayahInputs[i] = inp.value;
+  });
+  draft.ayahModeInputs = ayahInputs;
+
+  localStorage.setItem(getDraftKey(surahNum), JSON.stringify(draft));
+}
+
+function loadDraft(surahNum) {
+  const saved = localStorage.getItem(getDraftKey(surahNum));
+  if (!saved) return null;
+  return JSON.parse(saved);
+}
+
+function clearDraft(surahNum) {
+  localStorage.removeItem(getDraftKey(surahNum));
+}
+
+// ──────────────────────────────────────────────
 // FETCH SURAH LIST
 // ──────────────────────────────────────────────
 async function loadSurahList() {
@@ -430,6 +472,7 @@ async function fetchSurah(num, edition) {
 // RENDER AYAHS
 // ──────────────────────────────────────────────
 function renderStudy() {
+  const draft = loadDraft(currentSurah.number);
   let html = '';
 
   // Full-surah write card (shown only when "السورة كاملة" is active)
@@ -448,7 +491,8 @@ function renderStudy() {
           <div class="mushaf-line" data-ayah-idx="${i}">
             <textarea class="mushaf-input" id="surah-ayah-input-${i}" rows="1"
               placeholder="${i === 0 && currentSurah.number === 1 ? basmala : 'اكتب الآية...'}"
-              onkeydown="handleSurahKey(event, ${i})"></textarea>
+              onkeydown="handleSurahKey(event, ${i})"
+              oninput="saveDraft(${currentSurah.number})">${draft ? (draft.ayahs[i] || '') : ''}</textarea>
             <span class="mushaf-num" aria-hidden="true">﴿${toArabicIndicNumber(a.numberInSurah)}﴾</span>
             <div class="feedback-wrap" id="surah-ayah-feedback-${i}"></div>
           </div>
@@ -464,6 +508,7 @@ function renderStudy() {
   }
 
   currentAyahs.forEach((ayah, idx) => {
+    const savedAyahText = draft && draft.ayahModeInputs ? (draft.ayahModeInputs[idx] || '') : '';
     html += `
       <div class="ayah-card" id="ayah-card-${idx}">
         <div class="ayah-header">
@@ -481,7 +526,8 @@ function renderStudy() {
         <div class="ayah-input-wrap" id="ayah-input-wrap-${idx}">
           <textarea class="ayah-input" id="ayah-input-${idx}"
             placeholder="اكتب الآية هنا..." rows="2"
-            onkeydown="handleInputKey(event, ${idx})"></textarea>
+            onkeydown="handleInputKey(event, ${idx})"
+            oninput="saveDraft(${currentSurah.number})">${savedAyahText}</textarea>
           <button class="check-btn" onclick="checkAyah(${idx})">تحقق ✓</button>
           <div class="feedback-wrap" id="feedback-${idx}"></div>
         </div>
@@ -564,6 +610,10 @@ function resetAll() {
   score = { correct: 0, total: currentAyahs.length };
   surahScorePct = null;
   updateScoreUI();
+  
+  // Clear drafts
+  clearDraft(currentSurah.number);
+  
   const surahFb  = document.getElementById('surah-write-feedback');
   if (surahFb) { surahFb.className = 'feedback-wrap'; surahFb.innerHTML = ''; }
   const basmalaInp = document.getElementById('surah-basmala-input');
