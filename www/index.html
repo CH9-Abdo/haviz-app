@@ -42,17 +42,17 @@
     </div>
 
     <div class="bottom-nav">
-      <div class="nav-item active" onclick="showTab('home')">
+      <div class="nav-item active" id="nav-home" onclick="showTab('home')">
         <div class="nav-icon">🏠</div>
         <div class="nav-label">الرئيسية</div>
       </div>
-      <div class="nav-item" onclick="showTab('progress')">
+      <div class="nav-item" id="nav-progress" onclick="showTab('progress')">
         <div class="nav-icon">📊</div>
         <div class="nav-label">تقدمي</div>
       </div>
-      <div class="nav-item" onclick="toggleTheme()">
-        <div class="nav-icon" id="theme-icon">🌙</div>
-        <div class="nav-label">المظهر</div>
+      <div class="nav-item" id="nav-settings" onclick="showTab('settings')">
+        <div class="nav-icon">⚙️</div>
+        <div class="nav-label">الإعدادات</div>
       </div>
     </div>
   </div>
@@ -89,12 +89,6 @@
       <button class="mem-ctrl-btn danger" onclick="resetAll()">↺ إعادة</button>
     </div>
 
-    <!-- Strict mode toggle — OFF by default so users can write without tashkeel -->
-    <div class="strict-toggle" id="strict-toggle-wrap" style="display:none">
-      <input type="checkbox" id="strict-mode">
-      <label for="strict-mode">مقارنة صارمة (تتطلب التشكيل)</label>
-    </div>
-
     <!-- Write mode toggle (ayah-by-ayah vs full surah) -->
     <div class="write-mode-bar" id="write-mode-wrap" style="display:none">
       <button class="write-mode-btn active" id="write-mode-ayah" onclick="setWriteMode('ayah')">✍️ آية بآية</button>
@@ -108,7 +102,80 @@
         <div class="loader-text">جاري تحميل السورة...</div>
       </div>
     </div>
+  </div>
 
+  <!-- ══════════════════════════════════
+       SETTINGS SCREEN
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-settings">
+    <div class="topbar">
+      <div style="width:38px"></div>
+      <div class="topbar-title">الإعدادات</div>
+      <div style="width:38px"></div>
+    </div>
+
+    <div class="settings-content">
+      <div class="settings-group">
+        <div class="settings-group-title">🎧 إعدادات التلاوة</div>
+        <div class="settings-card">
+          <div class="setting-row">
+            <span class="setting-label-lg">المقرئ المفضل</span>
+            <select id="reciter-select" class="setting-select-lg">
+              <option value="ar.alafasy">مشاري العفاسي</option>
+              <option value="ar.ahmedajamy">أحمد علي العجمي</option>
+              <option value="ar.shaatree">أبو بكر الشاطري</option>
+              <option value="ar.minshawi">محمد المنشاوي</option>
+              <option value="ar.husary">محمود الحصري</option>
+              <option value="ar.abdulsamad">عبد الباسط عبد الصمد</option>
+              <option value="ar.parhizgar">شهريار برهيزكار</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">✍️ إعدادات الحفظ</div>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-label-lg">المقارنة الصارمة</span>
+              <p class="setting-desc">تتطلب مطابقة التشكيل وعلامات الوقف بدقة</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="strict-mode">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">🎨 المظهر</div>
+        <div class="settings-card">
+          <div class="setting-row" onclick="toggleTheme()" style="cursor:pointer">
+            <span class="setting-label-lg">الوضع الليلي / النهاري</span>
+            <div class="theme-status">
+              <span id="theme-icon-settings">🌙</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showTab('home')">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">الرئيسية</div>
+      </div>
+      <div class="nav-item" onclick="showTab('progress')">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">تقدمي</div>
+      </div>
+      <div class="nav-item active" onclick="showTab('settings')">
+        <div class="nav-icon">⚙️</div>
+        <div class="nav-label">الإعدادات</div>
+      </div>
+    </div>
   </div>
 
   <!-- ══════════════════════════════════
@@ -125,17 +192,17 @@
     <div class="progress-content" id="progress-content"></div>
 
     <div class="bottom-nav">
-      <div class="nav-item" onclick="showTab('home')">
+      <div class="nav-item" id="nav-home-2" onclick="showTab('home')">
         <div class="nav-icon">🏠</div>
         <div class="nav-label">الرئيسية</div>
       </div>
-      <div class="nav-item active" onclick="showTab('progress')">
+      <div class="nav-item active" id="nav-progress-2" onclick="showTab('progress')">
         <div class="nav-icon">📊</div>
         <div class="nav-label">تقدمي</div>
       </div>
-      <div class="nav-item" onclick="toggleTheme()">
-        <div class="nav-icon" id="theme-icon-2">🌙</div>
-        <div class="nav-label">المظهر</div>
+      <div class="nav-item" id="nav-settings-2" onclick="showTab('settings')">
+        <div class="nav-icon">⚙️</div>
+        <div class="nav-label">الإعدادات</div>
       </div>
     </div>
   </div>

@@ -4,11 +4,13 @@
 const API = 'https://api.alquran.cloud/v1';
 const STRICT_MODE_KEY = 'strict_mode';
 const WRITE_MODE_KEY = 'write_mode'; // 'ayah' | 'surah'
+const RECITER_KEY = 'current_reciter';
 let allSurahs   = [];
 let currentSurah = null;
 let currentAyahs = [];
 let currentMode  = 'read';
 let writeMode    = localStorage.getItem(WRITE_MODE_KEY) || 'ayah';
+let currentReciter = localStorage.getItem(RECITER_KEY) || 'ar.alafasy';
 let score        = { correct: 0, total: 0 };
 let surahScorePct = null;
 let currentAudio = null;
@@ -17,8 +19,10 @@ let isDark = localStorage.getItem('theme') === 'dark';
 // Apply saved theme
 if (isDark) {
   document.documentElement.setAttribute('data-theme', 'dark');
-  document.getElementById('theme-icon').textContent   = '☀️';
-  document.getElementById('theme-icon-2').textContent = '☀️';
+  const icon = '☀️';
+  if(document.getElementById('theme-icon')) document.getElementById('theme-icon').textContent = icon;
+  if(document.getElementById('theme-icon-2')) document.getElementById('theme-icon-2').textContent = icon;
+  if(document.getElementById('theme-icon-settings')) document.getElementById('theme-icon-settings').textContent = icon;
 }
 
 // ──────────────────────────────────────────────
@@ -202,16 +206,24 @@ function buildDiffHtml(userText, correctText, isStrict) {
 // ──────────────────────────────────────────────
 // STRICT MODE (persisted; default OFF)
 // ──────────────────────────────────────────────
-function initStrictModeControl() {
-  const el = document.getElementById('strict-mode');
-  if (!el) return;
+function initSettingsControl() {
+  const strictEl = document.getElementById('strict-mode');
+  if (strictEl) {
+    strictEl.checked = localStorage.getItem(STRICT_MODE_KEY) === '1';
+    strictEl.addEventListener('change', () => {
+      localStorage.setItem(STRICT_MODE_KEY, strictEl.checked ? '1' : '0');
+    });
+  }
 
-  const saved = localStorage.getItem(STRICT_MODE_KEY);
-  el.checked = saved === '1'; // default: false
-
-  el.addEventListener('change', () => {
-    localStorage.setItem(STRICT_MODE_KEY, el.checked ? '1' : '0');
-  });
+  const reciterEl = document.getElementById('reciter-select');
+  if (reciterEl) {
+    reciterEl.value = currentReciter;
+    reciterEl.addEventListener('change', (e) => {
+      currentReciter = e.target.value;
+      localStorage.setItem(RECITER_KEY, currentReciter);
+      showToast('تم تغيير المقرئ');
+    });
+  }
 }
 
 function initWriteModeControl() {
@@ -262,8 +274,11 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
   const icon = isDark ? '☀️' : '🌙';
-  document.getElementById('theme-icon').textContent   = icon;
-  document.getElementById('theme-icon-2').textContent = icon;
+  
+  // Update all icons
+  if(document.getElementById('theme-icon')) document.getElementById('theme-icon').textContent = icon;
+  if(document.getElementById('theme-icon-2')) document.getElementById('theme-icon-2').textContent = icon;
+  if(document.getElementById('theme-icon-settings')) document.getElementById('theme-icon-settings').textContent = icon;
 }
 
 // ──────────────────────────────────────────────
@@ -280,6 +295,8 @@ function showTab(tab) {
   } else if (tab === 'progress') {
     showScreen('progress');
     renderProgress();
+  } else if (tab === 'settings') {
+    showScreen('settings');
   }
 }
 
@@ -487,14 +504,12 @@ function setMode(mode) {
   const content    = document.getElementById('study-content');
   const scoreBar   = document.getElementById('score-bar-wrap');
   const memCtrl    = document.getElementById('mem-controls');
-  const strictWrap = document.getElementById('strict-toggle-wrap');
   const writeWrap  = document.getElementById('write-mode-wrap');
 
   if (mode === 'memorize') {
     content.classList.add('memorize-mode');
     scoreBar.style.display   = 'flex';
     memCtrl.style.display    = 'flex';
-    strictWrap.style.display = 'flex';
     if (writeWrap) writeWrap.style.display = 'flex';
     currentAyahs.forEach((_, i) => hideAyah(i));
     score = { correct: 0, total: currentAyahs.length };
@@ -503,7 +518,6 @@ function setMode(mode) {
     content.classList.remove('memorize-mode');
     scoreBar.style.display   = 'none';
     memCtrl.style.display    = 'none';
-    strictWrap.style.display = 'none';
     if (writeWrap) writeWrap.style.display = 'none';
     currentAyahs.forEach((_, i) => {
       document.getElementById('ayah-card-' + i).classList.remove('ayah-hidden');
@@ -742,10 +756,10 @@ function checkSurahFull() {
 function playAudio(globalNum, idx) {
   stopAudio();
   const btn = document.getElementById('audio-btn-' + idx);
-  const url = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalNum}.mp3`;
+  const url = `https://cdn.islamic.network/quran/audio/128/${currentReciter}/${globalNum}.mp3`;
   currentAudio = new Audio(url);
   btn.classList.add('playing');
-  currentAudio.play().catch(() => showToast('تعذّر تشغيل الصوت'));
+  currentAudio.play().catch(() => showToast('تعذّر تشغيل الصوت لهذا المقرئ'));
   currentAudio.onended = () => {
     btn.classList.remove('playing');
     currentAudio = null;
@@ -827,6 +841,6 @@ function showToast(msg) {
 // ──────────────────────────────────────────────
 // INIT
 // ──────────────────────────────────────────────
-initStrictModeControl();
+initSettingsControl();
 initWriteModeControl();
 loadSurahList();
