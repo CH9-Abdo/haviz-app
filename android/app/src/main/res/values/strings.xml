@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Hafiz</string>
+    <string name="title_activity_main">Hafiz</string>
+    <string name="package_name">com.chenoufi.hafiz</string>
+    <string name="custom_url_scheme">com.chenoufi.hafiz</string>
+</resources>

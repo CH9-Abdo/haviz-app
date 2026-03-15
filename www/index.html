@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>حافظ - تطبيق حفظ القرآن</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══════════════════════════════════
+       HOME SCREEN
+  ══════════════════════════════════ -->
+  <div class="screen active" id="screen-home">
+
+    <div class="home-hero">
+      <div class="app-logo">☽</div>
+      <div class="app-name">حافِظ</div>
+      <div class="app-subtitle">رفيقك في حفظ القرآن الكريم</div>
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="surah-search" placeholder="ابحث عن سورة...">
+      </div>
+    </div>
+
+    <div class="surah-list" id="surah-list">
+      <!-- Skeletons shown while loading -->
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="showTab('home')">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">الرئيسية</div>
+      </div>
+      <div class="nav-item" onclick="showTab('progress')">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">تقدمي</div>
+      </div>
+      <div class="nav-item" onclick="toggleTheme()">
+        <div class="nav-icon" id="theme-icon">🌙</div>
+        <div class="nav-label">المظهر</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       STUDY SCREEN
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-study">
+
+    <div class="topbar">
+      <div class="topbar-icon" onclick="goBack()">←</div>
+      <div class="topbar-title" id="study-title">السورة</div>
+      <div class="topbar-icon" onclick="stopAudio()" title="إيقاف الصوت">🔇</div>
+    </div>
+
+    <!-- Mode switcher -->
+    <div class="mode-bar">
+      <button class="mode-btn active" id="btn-read"     onclick="setMode('read')">📖 قراءة</button>
+      <button class="mode-btn"        id="btn-memorize" onclick="setMode('memorize')">✍️ حفظ</button>
+    </div>
+
+    <!-- Score bar (visible in memorize mode only) -->
+    <div id="score-bar-wrap" style="display:none;padding:12px 16px;background:var(--green-deep);align-items:center;justify-content:space-between;gap:12px;flex-direction:row;">
+      <span style="color:var(--gold);font-size:13px;">النتيجة</span>
+      <div style="flex:1;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">
+        <div id="score-progress" style="height:100%;background:var(--gold);border-radius:3px;transition:width 0.4s ease;width:0%"></div>
+      </div>
+      <span style="color:var(--gold-light);font-size:18px;font-weight:700;" id="score-display">0/0</span>
+    </div>
+
+    <!-- Memorize controls -->
+    <div class="mem-controls" id="mem-controls" style="display:none">
+      <button class="mem-ctrl-btn" onclick="revealAll()">👁 كشف الكل</button>
+      <button class="mem-ctrl-btn danger" onclick="resetAll()">↺ إعادة</button>
+    </div>
+
+    <!-- Strict mode toggle — OFF by default so users can write without tashkeel -->
+    <div class="strict-toggle" id="strict-toggle-wrap" style="display:none">
+      <input type="checkbox" id="strict-mode">
+      <label for="strict-mode">مقارنة صارمة (تتطلب التشكيل)</label>
+    </div>
+
+    <!-- Write mode toggle (ayah-by-ayah vs full surah) -->
+    <div class="write-mode-bar" id="write-mode-wrap" style="display:none">
+      <button class="write-mode-btn active" id="write-mode-ayah" onclick="setWriteMode('ayah')">✍️ آية بآية</button>
+      <button class="write-mode-btn" id="write-mode-surah" onclick="setWriteMode('surah')">📝 السورة كاملة</button>
+    </div>
+
+    <!-- Ayah cards rendered here -->
+    <div class="study-content" id="study-content">
+      <div class="loader-wrap">
+        <div class="loader"></div>
+        <div class="loader-text">جاري تحميل السورة...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════
+       PROGRESS SCREEN
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-progress">
+
+    <div class="topbar">
+      <div style="width:38px"></div>
+      <div class="topbar-title">تقدّمي</div>
+      <div class="topbar-icon" onclick="clearProgress()" title="مسح السجلات">🗑</div>
+    </div>
+
+    <div class="progress-content" id="progress-content"></div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showTab('home')">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">الرئيسية</div>
+      </div>
+      <div class="nav-item active" onclick="showTab('progress')">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">تقدمي</div>
+      </div>
+      <div class="nav-item" onclick="toggleTheme()">
+        <div class="nav-icon" id="theme-icon-2">🌙</div>
+        <div class="nav-label">المظهر</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

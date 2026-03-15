@@ -1,0 +1,10 @@
+{
+  "appId": "com.chenoufi.hafiz",
+  "appName": "Hafiz",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true
+    }
+  }
+}
