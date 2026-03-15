@@ -353,8 +353,10 @@ function renderList(list) {
 document.getElementById('surah-search').addEventListener('input', function () {
   const q = this.value.trim();
   if (!q) { renderList(allSurahs); return; }
+  
+  const normalizedQuery = normalizeArabic(q);
   const filtered = allSurahs.filter(s =>
-    s.name.includes(q) ||
+    normalizeArabic(s.name).includes(normalizedQuery) ||
     s.englishName.toLowerCase().includes(q.toLowerCase()) ||
     String(s.number).includes(q)
   );
