@@ -1,13 +1,61 @@
-## Created with Capacitor Create App
+# حافِظ - Hafiz (Quran Memorization App) 🌙
 
-This app was created using [`@capacitor/create-app`](https://github.com/ionic-team/create-capacitor-app),
-and comes with a very minimal shell for building an app.
+تطبيق "حافِظ" هو رفيقك الرقمي لمساعدتك في حفظ ومراجعة القرآن الكريم بأسلوب تفاعلي ذكي وسهل.
 
-### Running this example
+[Hafiz App](https://github.com/CH9-Abdo/haviz-app)
 
-To run the provided example, you can use `npm start` command.
+## ✨ المميزات الرئيسية (Features)
 
+*   **📖 وضع القراءة والحفظ:** التبديل السلس بين قراءة السورة وتجربة اختبار الحفظ.
+*   **✍️ اختبار الكتابة التفاعلي:** اكتب الآيات وسيتم تصحيحها تلقائياً مع إظهار الفروقات (Diff) بين نصك والنص الأصلي.
+*   **⌨️ تجربة كتابة ذكية:**
+    *   **Enter:** للانتقال التلقائي للآية التالية (مما يسرع عملية التسميع).
+    *   **Ctrl + Enter:** للتحقق من صحة السورة كاملة.
+*   **🕌 معالجة ذكية للبسملة:** يتم عرض البسملة كنص ثابت وجميل في بداية كل سورة (عدا التوبة) مع إزالتها من الآية الأولى لتسهيل الكتابة دون أخطاء.
+*   **🔍 البحث السريع:** ابحث عن أي سورة بالاسم (عربي/إنجليزي) أو بالرقم.
+*   **📊 تتبع التقدم:** سجل لنتائجك في كل سورة لمعرفة مدى إتقانك وحفظك.
+*   **⚙️ وضع المقارنة الصارمة:** يمكنك تفعيل أو تعطيل التشكيل وعلامات الوقف عند التصحيح.
+*   **🌙 وضع المظهر الداكن:** دعم كامل للوضع الليلي لراحة العين أثناء القراءة.
+
+## 🛠 التقنيات المستخدمة (Tech Stack)
+
+*   **Frontend:** Vanilla JS, HTML5, CSS3.
+*   **Mobile Framework:** [Capacitor](https://capacitorjs.com/) (لتحويله لتطبيق Android/iOS).
+*   **Build Tool:** [Vite](https://vitejs.dev/).
+*   **API:** [AlQuran Cloud API](https://alquran.cloud/api).
+
+## 🚀 التشغيل والتطوير (Getting Started)
+
+### المتطلبات (Prerequisites)
+*   Node.js (v18+)
+*   NPM
+
+### تثبيت الاعتماديات
+```bash
+npm install
+```
+
+### تشغيل التطوير (Web)
 ```bash
 npm start
 ```
-# haviz-app
+
+### البناء للأندرويد (Android Build)
+1. بناء ملفات الويب:
+   ```bash
+   npm run build
+   ```
+2. مزامنة الملفات مع الأندرويد:
+   ```bash
+   npx cap copy android
+   ```
+3. فتح المشروع في Android Studio:
+   ```bash
+   npx cap open android
+   ```
+
+## 🤝 المساهمة (Contributing)
+نرحب دائماً بالمساهمات! إذا كان لديك اقتراح لتحسين التطبيق أو إضافة ميزة جديدة، لا تتردد في فتح **Issue** أو إرسال **Pull Request**.
+
+---
+تم التطوير بواسطة **[CH9-Abdo](https://github.com/CH9-Abdo)**
